@@ -45,6 +45,7 @@ write_all(int fd, const char *buf, int n)
 int
 make_conn(const char *hostname)
 {
+  int sockfd = 0;
   struct addrinfo *getaddrinfo_output = NULL;
   int getaddrinfo_result =
     getaddrinfo(hostname, "443", NULL, &getaddrinfo_output);
@@ -53,7 +54,7 @@ make_conn(const char *hostname)
     goto cleanup;
   }
 
-  int sockfd = socket(getaddrinfo_output->ai_family,
+  sockfd = socket(getaddrinfo_output->ai_family,
                       getaddrinfo_output->ai_socktype,
                       getaddrinfo_output->ai_protocol);
   if(sockfd < 0) {
@@ -91,6 +92,7 @@ send_request_and_read_response(int sockfd, void *client_session,
 {
   int ret = 1;
   int result = 1;
+  int epollfd = 0;
   char buf[2048];
 
   bzero(buf, sizeof(buf));
@@ -114,7 +116,7 @@ send_request_and_read_response(int sockfd, void *client_session,
 #define MAX_EVENTS 1
   struct epoll_event ev, events[MAX_EVENTS];
   int nfds = 0;
-  int epollfd = epoll_create1(0);
+  epollfd = epoll_create1(0);
   if(epollfd == -1) {
     perror("epoll_create1");
     goto cleanup;
@@ -232,13 +234,13 @@ int
 do_request(const void *client_config, const char *hostname, const char *path)
 {
   int ret = 1;
+  void *client_session = NULL;
   int sockfd = make_conn(hostname);
   if(sockfd < 0) {
     // No perror because make_conn printed error already.
     goto cleanup;
   }
 
-  void *client_session = NULL;
   int result =
     rustls_client_session_new(client_config, hostname, &client_session);
   if(result != CRUSTLS_OK) {
