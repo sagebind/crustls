@@ -6,8 +6,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        os: [ubuntu-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v2
       - run: make test
       - run: make PROFILE=release test
+
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: make -f Makefile.Windows test
+      - run: make -f Makefile.Windows PROFILE=release test
