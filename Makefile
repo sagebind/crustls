@@ -1,5 +1,5 @@
 CFLAGS := -Werror -Wall -Wextra -Wpedantic -g
-LDFLAGS := -Wl,--gc-sections -lpthread -ldl
+LDFLAGS := -lpthread -ldl
 
 PROFILE := debug
 DESTDIR=/usr/local
