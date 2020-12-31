@@ -5,13 +5,14 @@
 export CL=
 
 
-CRUSTLS_LIB = target/i686-pc-windows-msvc/release/crustls.lib
-
 USE_CLANG_CL ?= 1
 
 CFLAGS     = -nologo -MD -Zi -W3 -I. -Dssize_t=int -D_CRT_SECURE_NO_WARNINGS
 LDFLAGS    = -nologo -incremental:no
 CARGOFLAGS =
+
+PROFILE = debug
+CRUSTLS_LIB = target/$(PROFILE)/crustls.lib
 
 ifeq ($(PROFILE), release)
 	CFLAGS += -O3
@@ -25,16 +26,16 @@ else
   CC = cl
 endif
 
-all: crustls.h $(CRUSTLS_LIB) # crustls-demo.exe
+all: src/crustls.h $(CRUSTLS_LIB) target/$(PROFILE)/crustls-demo.exe
 
 test: all
-	crustls-demo.exe httpbin.org /headers
+	./target/$(PROFILE)/crustls-demo.exe httpbin.org /headers
 
-crustls.h: src/lib.rs
+src/crustls.h: src/lib.rs
 	cbindgen --lang C --output $@
 	@echo
 
-crustls-demo.exe: main.obj $(CRUSTLS_LIB)
+target/$(PROFILE)/crustls-demo.exe: main.obj $(CRUSTLS_LIB)
 	link $(LDFLAGS) -out:$@ $^
 	@echo
 
@@ -42,12 +43,12 @@ $(CRUSTLS_LIB): src/lib.rs Cargo.toml
 	cargo build $(CARGOFLAGS)
 	@echo
 
-main.obj: src/main.c crustls.h
+main.obj: src/main.c src/crustls.h
 	$(CC) -Fo$@ -c $< $(CFLAGS)
 	@echo
 
 clean:
-	rm -f *.obj target/.rustc_info.json $(CRUSTLS_LIB) crustls.h vc1*.pdb
+	rm -f *.obj target/.rustc_info.json $(CRUSTLS_LIB) src/crustls.h vc1*.pdb
 	rm -fR target/*
 	rmdir target
 
