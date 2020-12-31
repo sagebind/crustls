@@ -32,7 +32,7 @@ crustls-demo.exe: main.obj $(CRUSTLS_LIB)
 	link $(LDFLAGS) -out:$@ $^
 	@echo
 
-$(CRUSTLS_LIB): src/lib.rs src/error.rs Cargo.toml
+$(CRUSTLS_LIB): src/lib.rs Cargo.toml
 	cargo build $(CARGOFLAGS)
 	@echo
 
