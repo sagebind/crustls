@@ -5,7 +5,7 @@
 export CL=
 
 
-USE_CLANG_CL ?= 1
+USE_CLANG_CL ?= 0
 
 CFLAGS     = -nologo -MD -Zi -W3 -I. -Dssize_t=int -D_CRT_SECURE_NO_WARNINGS
 LDFLAGS    = -nologo -incremental:no
