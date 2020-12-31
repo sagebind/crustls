@@ -348,6 +348,7 @@ int
 do_request(const struct rustls_client_config *client_config,
            const char *hostname, const char *path)
 {
+  struct rustls_client_session *client_session = NULL;
   int ret = 1;
   int sockfd = make_conn(hostname);
   if(sockfd < 0) {
@@ -355,7 +356,6 @@ do_request(const struct rustls_client_config *client_config,
     goto cleanup;
   }
 
-  struct rustls_client_session *client_session = NULL;
   rustls_result result =
     rustls_client_session_new(client_config, hostname, &client_session);
   if(result != RUSTLS_RESULT_OK) {
