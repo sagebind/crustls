@@ -4,9 +4,7 @@
 #
 export CL=
 
-
-USE_CLANG_CL ?= 0
-
+CC         = clang
 CFLAGS     = -nologo -MD -Zi -W3 -I. -Dssize_t=int -D_CRT_SECURE_NO_WARNINGS
 LDFLAGS    = -nologo -incremental:no
 CARGOFLAGS =
@@ -17,13 +15,6 @@ CRUSTLS_LIB = target/$(PROFILE)/crustls.lib
 ifeq ($(PROFILE), release)
 	CFLAGS += -O3
 	CARGOFLAGS += --release
-endif
-
-ifeq ($(USE_CLANG_CL),1)
-  CC = clang-cl
-  CFLAGS += -ferror-limit=5
-else
-  CC = cl.exe
 endif
 
 all: src/crustls.h $(CRUSTLS_LIB) target/$(PROFILE)/crustls-demo.exe

@@ -16,5 +16,13 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - run: make -f Makefile.Windows test
-      - run: make -f Makefile.Windows PROFILE=release test
+
+      - name: Add clang path to $PATH env
+        shell: bash
+        if: runner.os == 'Windows'
+        run: echo "PATH=$PATH:C:\msys64\mingw64\bin" >> $GITHUB_ENV
+
+      - shell: bash
+        run: make test
+      - shell: bash
+        run: make PROFILE=release test
