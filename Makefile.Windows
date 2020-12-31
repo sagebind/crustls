@@ -23,7 +23,7 @@ ifeq ($(USE_CLANG_CL),1)
   CC = clang-cl
   CFLAGS += -ferror-limit=5
 else
-  CC = cl
+  CC = cl.exe
 endif
 
 all: src/crustls.h $(CRUSTLS_LIB) target/$(PROFILE)/crustls-demo.exe
