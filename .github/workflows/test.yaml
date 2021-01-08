@@ -16,7 +16,7 @@ jobs:
         run: echo "PATH=$PATH:C:\msys64\mingw64\bin" >> $GITHUB_ENV
 
       - shell: bash
-        run: make test
+        run: make CC=clang test
 
       - shell: bash
-        run: make PROFILE=release test
+        run: make CC=clang PROFILE=release test
