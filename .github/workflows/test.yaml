@@ -15,5 +15,8 @@ jobs:
         if: runner.os == 'Windows'
         run: echo "PATH=$PATH:C:\msys64\mingw64\bin" >> $GITHUB_ENV
 
-      - run: make test
-      - run: make PROFILE=release test
+      - shell: bash
+        run: make test
+
+      - shell: bash
+        run: make PROFILE=release test
