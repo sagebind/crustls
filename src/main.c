@@ -302,13 +302,19 @@ do_read(int sockfd, struct rustls_client_session *client_session)
   return CRUSTLS_DEMO_OK;
 }
 
+#if defined(WIN32)
+typedef SOCKET crustls_socket_t;
+#else
+typedef int crustls_socket_t;
+#endif
+
 /*
  * Given an established TCP connection, and a rustls client_session, send an
  * HTTP request and read the response. On success, return 0. On error, print
  * the message and return 1.
  */
 int
-send_request_and_read_response(int sockfd,
+send_request_and_read_response(crustls_socket_t sockfd,
                                struct rustls_client_session *client_session,
                                const char *hostname, const char *path)
 {
@@ -412,7 +418,7 @@ do_request(const struct rustls_client_config *client_config,
 {
   struct rustls_client_session *client_session = NULL;
   int ret = 1;
-  int sockfd = make_conn(hostname);
+  crustls_socket_t sockfd = make_conn(hostname);
   if(sockfd < 0) {
     // No perror because make_conn printed error already.
     goto cleanup;
