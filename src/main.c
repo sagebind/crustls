@@ -1,15 +1,15 @@
 #if defined(_WIN32)
-  #define WIN32_LEAN_AND_MEAN
-  #include <windows.h>
-  #include <winsock2.h>
-  #include <ws2tcpip.h>    /* gai_strerror() */
-  #include <io.h>          /* write() */
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h> /* gai_strerror() */
+#include <io.h> /* write() */
 #else
-  #include <sys/socket.h>
-  #include <netinet/in.h>
-  #include <netdb.h>
-  #include <arpa/inet.h>
-  #include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 #endif
 
 #include <sys/types.h>
@@ -20,9 +20,9 @@
 #include <fcntl.h>
 
 #if defined(_WIN32)
-  #define perror(str)     fprintf(stderr, str ": %d.\n", WSAGetLastError())
+#define perror(str) fprintf(stderr, str ": %d.\n", WSAGetLastError())
 #else
-  #define closesocket(s)  close(s)
+#define closesocket(s) close(s)
 #endif
 
 #if !defined(STDOUT_FILENO)
@@ -51,11 +51,11 @@ write_all(int fd, const char *buf, int n, int a_socket)
   int m = 0;
   while(n > 0) {
 #ifdef _WIN32
-    if (a_socket)
-       m = send(fd, buf, n, 0);
+    if(a_socket)
+      m = send(fd, buf, n, 0);
     else
 #endif
-    m = write(fd, buf, n);
+      m = write(fd, buf, n);
     if(m < 0) {
       perror("writing to stdout");
       return 1;
@@ -66,7 +66,7 @@ write_all(int fd, const char *buf, int n, int a_socket)
     }
     n -= m;
   }
-  (void) a_socket;
+  (void)a_socket;
   return 0;
 }
 
@@ -81,7 +81,7 @@ nonblock(int sockfd)
 #ifdef _WIN32
   u_long nonblock = 1UL;
 
-  if (ioctlsocket(sockfd, FIONBIO, &nonblock) != 0) {
+  if(ioctlsocket(sockfd, FIONBIO, &nonblock) != 0) {
     perror("Error setting socket nonblocking");
     return CRUSTLS_DEMO_ERROR;
   }
@@ -208,7 +208,7 @@ copy_plaintext_to_stdout(struct rustls_client_session *client_session)
   size_t n;
 
   for(;;) {
-    bzero(buf, sizeof(buf));
+    memset(buf, 0, sizeof(buf));
     result = rustls_client_session_read(
       client_session, (uint8_t *)buf, sizeof(buf), &n);
     if(result != RUSTLS_RESULT_OK) {
@@ -262,9 +262,8 @@ do_read(int sockfd, struct rustls_client_session *client_session)
   }
 #ifdef _WIN32
   else if(n < 0) {
-    if (WSAGetLastError() == WSAEWOULDBLOCK) {
-      fprintf(stderr,
-              "reading from socket: WSAEWOULDBLOCK.\n");
+    if(WSAGetLastError() == WSAEWOULDBLOCK) {
+      fprintf(stderr, "reading from socket: WSAEWOULDBLOCK.\n");
       return CRUSTLS_DEMO_AGAIN;
     }
 #else
@@ -320,7 +319,7 @@ send_request_and_read_response(int sockfd,
   fd_set write_fds;
   size_t n = 0;
 
-  bzero(buf, sizeof(buf));
+  memset(buf, 0, sizeof(buf));
   snprintf(buf,
            sizeof(buf),
            "GET %s HTTP/1.1\r\n"
@@ -379,7 +378,7 @@ send_request_and_read_response(int sockfd,
     if(rustls_client_session_wants_write(client_session) &&
        FD_ISSET(sockfd, &write_fds)) {
       fprintf(stderr, "ClientSession wants us to write_tls.\n");
-      bzero(buf, sizeof(buf));
+      memset(buf, 0, sizeof(buf));
       result = rustls_client_session_write_tls(
         client_session, (uint8_t *)buf, sizeof(buf), &n);
       if(result != RUSTLS_RESULT_OK) {
@@ -469,7 +468,7 @@ main(int argc, const char **argv)
 
 #if defined(_WIN32)
   WSADATA wsa;
-  WSAStartup (MAKEWORD(1,1), &wsa);
+  WSAStartup(MAKEWORD(1, 1), &wsa);
 #endif
 
   int i;
@@ -484,8 +483,8 @@ main(int argc, const char **argv)
   ret = 0;
 
 cleanup:
-  if (client_config)
-     rustls_client_config_free(client_config);
+  if(client_config)
+    rustls_client_config_free(client_config);
 
 #if defined(_WIN32)
   WSACleanup();
