@@ -1,8 +1,8 @@
 [package]
-name = "crustls"
+name = "curl-crustls"
 version = "0.3.0"
-authors = ["Jacob Hoffman-Andrews <github@hoffman-andrews.com>"]
-description = "C-to-rustls bindings"
+authors = ["Jacob Hoffman-Andrews <github@hoffman-andrews.com>", "Stephen M. Coakley <me@stephencoakley.com>"]
+description = "C-to-rustls bindings (fork for curl-rust)"
 edition = "2018"
 
 [dependencies]
